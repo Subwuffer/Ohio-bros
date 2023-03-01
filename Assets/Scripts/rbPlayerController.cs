@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 public class rbPlayerController : MonoBehaviour
 {
     [SerializeField] private float camDistance = 7.5f;
-    [SerializeField] private Camera cam;
     public Rigidbody2D rb;
 
     public Animator animator;
@@ -18,8 +17,8 @@ public class rbPlayerController : MonoBehaviour
         SprintJumping
     }
     public PlayerState State;
-    [SerializeField] private float playerSpeed = 2.0f;
-    [SerializeField] private float jumpHeight = 1.0f;
+    [SerializeField] private float playerSpeed = 1.0f;
+    [SerializeField] private float jumpHeight = 0.0f;
     [SerializeField] private bool grounded;
     private Vector2 movementInput = Vector2.zero;
     private bool jumped = false;
@@ -28,7 +27,6 @@ public class rbPlayerController : MonoBehaviour
 
     private void Start()
     {
-        cam = FindObjectOfType<Camera>();;
         sr = GetComponent<SpriteRenderer>();
     }
 
@@ -49,14 +47,6 @@ public class rbPlayerController : MonoBehaviour
 
     void Update()
     {
-        if (cam.transform.position.x - transform.position.x > camDistance)
-        {
-            transform.position = new Vector3(cam.transform.position.x - camDistance + 0.05f, transform.position.y, transform.position.z);
-        }
-        if (cam.transform.position.x - transform.position.x < -1 * camDistance)
-        {
-            transform.position = new Vector3(cam.transform.position.x + camDistance - 0.05f, transform.position.y, transform.position.z);
-        }
         if (!grounded && sprintin)
         {
             State = PlayerState.SprintJumping;
