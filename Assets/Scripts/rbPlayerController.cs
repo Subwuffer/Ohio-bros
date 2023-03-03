@@ -12,9 +12,7 @@ public class rbPlayerController : MonoBehaviour
     {
         Idle,
         Walking,
-        Running,
         Jumping,
-        SprintJumping
     }
     public PlayerState State;
     [SerializeField] private float playerSpeed = 1.0f;
@@ -24,6 +22,8 @@ public class rbPlayerController : MonoBehaviour
     private bool jumped = false;
     private bool sprintin = false;
     private SpriteRenderer sr;
+
+    private float stockCounter = 3;
 
     private void Start()
     {
@@ -47,12 +47,7 @@ public class rbPlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!grounded && sprintin)
-        {
-            State = PlayerState.SprintJumping;
-            animator.SetBool("Run", true);
-        }
-        else if (!grounded)
+        if (!grounded)
         {
             State = PlayerState.Jumping;
             animator.SetBool("Run", true);
@@ -62,15 +57,22 @@ public class rbPlayerController : MonoBehaviour
             State = PlayerState.Idle;
             animator.SetBool("Run", false);
         }
-        else if (movementInput.x != 0 && grounded && !sprintin)
+        else if (movementInput.x != 0 && grounded)
         {
             State = PlayerState.Walking;
             animator.SetBool("Run", true);
         }
-        else if (movementInput.x != 0 && grounded && sprintin)
+
+        if (transform.position.y < -20 || transform.position.y > 20 || transform.position.x < -20 || transform.position.x > 20)
         {
-            State = PlayerState.Running;
-            animator.SetBool("Run", true);
+            transform.position = new Vector3(0, 0, 0);
+            stockCounter = stockCounter - 1;
+            Debug.Log(stockCounter);
+        }
+
+        if (stockCounter == 0)
+        {
+            Destroy(gameObject);
         }
         Vector3 move = new Vector2(movementInput.x, 0);
         float speedMultiplier = sprintin ? 4 : 2;
