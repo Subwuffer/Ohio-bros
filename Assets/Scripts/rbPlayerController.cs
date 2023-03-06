@@ -21,6 +21,8 @@ public class rbPlayerController : MonoBehaviour
     private Vector2 movementInput = Vector2.zero;
     private bool jumped = false;
     private bool sprintin = false;
+    private bool attacked = false;
+    private float stockCounter = 3;
     private SpriteRenderer sr;
 
     private float stockCounter = 3;
@@ -45,6 +47,20 @@ public class rbPlayerController : MonoBehaviour
         sprintin = context.action.triggered;
     }
 
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        attacked = context.action.triggered;
+    }
+
+    /*void OnCollisionEnter(Collision col)
+     {
+         if(col.gameObject.tag == "PlayerTarget") // Do not forget assign tag to the field
+         {
+             rb2 = col.gameobject.GetComponent<Rigidbody>();    
+             rb2.AddForce(transform.right * kickForce);
+         }
+     }*/
+    
     void Update()
     {
         if (!grounded)
@@ -81,6 +97,22 @@ public class rbPlayerController : MonoBehaviour
         {
             rb.AddForce(Vector3.up * jumpHeight, ForceMode2D.Impulse);
             grounded = false;
+        }
+
+        if (transform.position.x >= 30 || transform.position.x <= -30 || transform.position.y >= 30 || transform.position.y <= -30)
+        {
+            transform.position = new Vector3(0, 0, 0);
+            stockCounter = stockCounter - 1;
+        }
+
+        if (stockCounter == 0)
+        {
+            Destroy(gameObject);
+        }
+
+        if (attacked)
+        {
+
         }
         sr.flipX = movementInput.x < 0 ? false : (movementInput.x > 0 ? true : sr.flipX);
     }
